@@ -1,9 +1,10 @@
 import { RequestHandler } from "express";
 import { signupSchema } from "../schemas/signup";
 import z from "zod";
-import { findUserByEmail, findUserBySlug } from "../services/user";
-import { error } from "node:console";
+import { createUser, findUserByEmail, findUserBySlug } from "../services/user";
+
 import slug from "slug";
+import { hash } from "bcrypt-ts";
 
 export const signup: RequestHandler = async (req, res) => {
   const safeData = signupSchema.safeParse(req.body);
@@ -31,7 +32,17 @@ export const signup: RequestHandler = async (req, res) => {
   }
 
   // gera o hash da senha
+  const hashPassword = await hash(safeData.data.password, 10);
+
+
   // cria o usuario
+  const newUser = await createUser({
+    slug: userSlug, 
+    name: safeData.data.name,
+    email: safeData.data.email,
+    password: hashPassword,
+  })
+
   // cria o token
   // retorna o resultado
 
