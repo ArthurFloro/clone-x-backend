@@ -1,8 +1,9 @@
 import { RequestHandler } from "express";
 import { signupSchema } from "../schemas/signup";
 import z from "zod";
-import { findUserByEmail } from "../services/user";
+import { findUserByEmail, findUserBySlug } from "../services/user";
 import { error } from "node:console";
+import slug from "slug";
 
 export const signup: RequestHandler = async (req, res) => {
   const safeData = signupSchema.safeParse(req.body);
@@ -17,6 +18,18 @@ export const signup: RequestHandler = async (req, res) => {
   }
 
   // verifica o slug
+  let genSlug = true;
+  let userSlug = slug(safeData.data.name);
+  while (genSlug) {
+    const hasSlug = await findUserBySlug(userSlug);
+    if (hasSlug) {
+      let slugSuffix = Math.floor(Math.random() * 999999).toString();
+      userSlug = slug(safeData.data.name + slugSuffix);
+    } else {
+      genSlug = false;
+    }
+  }
+
   // gera o hash da senha
   // cria o usuario
   // cria o token
