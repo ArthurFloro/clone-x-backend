@@ -34,17 +34,24 @@ export const signup: RequestHandler = async (req, res) => {
   // gera o hash da senha
   const hashPassword = await hash(safeData.data.password, 10);
 
-
   // cria o usuario
   const newUser = await createUser({
-    slug: userSlug, 
+    slug: userSlug,
     name: safeData.data.name,
     email: safeData.data.email,
     password: hashPassword,
-  })
+  });
 
   // cria o token
+  const token = "";
   // retorna o resultado
 
-  res.json({});
+  res.status(201).json({
+    token,
+    user: {
+      name: newUser.name,
+      slug: newUser.slug,
+      avatar: newUser.avatar,
+    },
+  });
 };
