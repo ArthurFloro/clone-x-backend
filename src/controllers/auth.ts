@@ -5,6 +5,7 @@ import { createUser, findUserByEmail, findUserBySlug } from "../services/user";
 
 import slug from "slug";
 import { hash } from "bcrypt-ts";
+import { createJWT } from "../utils/jwt";
 
 export const signup: RequestHandler = async (req, res) => {
   const safeData = signupSchema.safeParse(req.body);
@@ -43,9 +44,9 @@ export const signup: RequestHandler = async (req, res) => {
   });
 
   // cria o token
-  const token = "";
-  // retorna o resultado
+  const token = createJWT(userSlug);
 
+  // retorna o resultado
   res.status(201).json({
     token,
     user: {
