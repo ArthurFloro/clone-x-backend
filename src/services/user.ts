@@ -4,7 +4,7 @@ import { getPublicURL } from "../utils/url";
 
 export const findUserByEmail = async (email: string) => {
   const user = await prisma.user.findFirst({
-    where: { email: email },
+    where: { email },
   });
 
   if (user) {
@@ -28,7 +28,7 @@ export const findUserBySlug = async (slug: string) => {
       bio: true,
       link: true,
     },
-    where: { slug: slug },
+    where: { slug },
   });
 
   if (user) {
